@@ -24,18 +24,22 @@ export function gregorianToCoptic(gregorianDate: Date): CopticDate {
   const gYear = gregorianDate.getUTCFullYear();
   const dateInUTC = Date.UTC(gYear, gregorianDate.getUTCMonth(), gregorianDate.getUTCDate());
 
-  // The Coptic New Year (Nayrouz) is on Sep 11, unless the following Gregorian year is a leap year, then it is Sep 12.
-  // This rule is valid for the Gregorian years 1900 to 2099.
+  // This calculates the Gregorian day of September for the Coptic New Year (Nayrouz).
+  // This logic is designed to be accurate across different centuries by accounting for
+  // the shifting difference between the Julian and Gregorian calendars.
   const isFollowingGregorianLeap = ((gYear + 1) % 4 === 0 && (gYear + 1) % 100 !== 0) || ((gYear + 1) % 400 === 0);
-  const nayrouzDay = isFollowingGregorianLeap ? 12 : 11;
+  const baseNayrouzDay = 11 + (Math.floor(gYear / 100) - 19) - (Math.floor(gYear / 400) - 4);
+  const nayrouzDayForYear = baseNayrouzDay + (isFollowingGregorianLeap ? 1 : 0);
 
   let copticYear = gYear - 284;
-  let nayrouzForCopticYear = Date.UTC(gYear, 8, nayrouzDay); // September is month 8
+  let nayrouzForCopticYear = Date.UTC(gYear, 8, nayrouzDayForYear); // September is month 8
 
   if (dateInUTC < nayrouzForCopticYear) {
-    const isCurrentGregorianLeap = (gYear % 4 === 0 && gYear % 100 !== 0) || (gYear % 400 === 0);
-    const prevNayrouzDay = isCurrentGregorianLeap ? 12 : 11;
-    nayrouzForCopticYear = Date.UTC(gYear - 1, 8, prevNayrouzDay);
+    const prevGYear = gYear - 1;
+    const isFollowingPrevGregorianLeap = ((prevGYear + 1) % 4 === 0 && (prevGYear + 1) % 100 !== 0) || ((prevGYear + 1) % 400 === 0);
+    const basePrevNayrouzDay = 11 + (Math.floor(prevGYear / 100) - 19) - (Math.floor(prevGYear / 400) - 4);
+    const prevNayrouzDay = basePrevNayrouzDay + (isFollowingPrevGregorianLeap ? 1 : 0);
+    nayrouzForCopticYear = Date.UTC(prevGYear, 8, prevNayrouzDay);
   } else {
     copticYear += 1;
   }
