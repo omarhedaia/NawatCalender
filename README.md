@@ -1,4 +1,4 @@
-# Firebase Studio
+# Coptic Calendar & Weather
 
 This is a NextJS starter in Firebase Studio.
 
