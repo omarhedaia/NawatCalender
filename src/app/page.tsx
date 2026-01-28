@@ -17,7 +17,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-12 bg-background text-foreground" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="w-full max-w-5xl mx-auto space-y-8">
         <header className="text-center">
-          <div className="flex items-center justify-center space-x-2 space-x-reverse mb-4">
+          <div className="flex items-center justify-center space-x-2 mb-4" dir="ltr">
             <Label htmlFor="language-switch" className={language === 'en' ? 'font-bold' : ''}>English</Label>
             <Switch
               id="language-switch"
