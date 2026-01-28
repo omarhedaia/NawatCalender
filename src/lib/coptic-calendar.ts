@@ -2,6 +2,7 @@ export type CopticDate = {
   day: number;
   month: number;
   monthName: string;
+  monthNameArabic: string;
   year: number;
   isLeapYear: boolean;
 };
@@ -10,6 +11,12 @@ const COPTIC_MONTHS = [
   "Thout", "Paopi", "Hathor", "Koiak", "Tobi", "Meshir",
   "Paremhat", "Paremoude", "Pashons", "Paoni", "Epep", "Mesori",
   "Pi Kogi Enavot"
+];
+
+const COPTIC_MONTHS_ARABIC = [
+  "توت", "بابه", "هاتور", "كيهك", "طوبه", "أمشير",
+  "برمهات", "برموده", "بشنس", "بؤونه", "أبيب", "مسرى",
+  "نسيئ"
 ];
 
 export function gregorianToCoptic(gregorianDate: Date): CopticDate {
@@ -53,6 +60,7 @@ export function gregorianToCoptic(gregorianDate: Date): CopticDate {
     day: copticDay,
     month: copticMonth,
     monthName: COPTIC_MONTHS[copticMonth - 1],
+    monthNameArabic: COPTIC_MONTHS_ARABIC[copticMonth - 1],
     year: copticYear,
     isLeapYear: isCopticLeap,
   };

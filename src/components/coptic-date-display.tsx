@@ -26,7 +26,10 @@ export function CopticDateDisplay() {
           </CardHeader>
           <CardContent>
             <Skeleton className="h-8 w-3/4" />
-            <Skeleton className="h-6 w-1/2 mt-2" />
+            <Skeleton className="h-6 w-full mt-1" />
+            <div className="border-t my-4" />
+            <Skeleton className="h-6 w-1/2" />
+            <Skeleton className="h-6 w-1/2 mt-1" />
           </CardContent>
         </Card>
         <Card>
@@ -46,12 +49,24 @@ export function CopticDateDisplay() {
   const copticDate: CopticDate = gregorianToCoptic(now);
   const currentNawa: Nawa | null = getCurrentNawa(now);
   
-  const gregorianDateString = now.toLocaleDateString(undefined, {
+  const gregorianDateString = now.toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
+
+  const gregorianDateStringArabic = now.toLocaleDateString('ar-EG', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const toArabicNumerals = (num: number) => {
+    const arabic = '٠١٢٣٤٥٦٧٨٩';
+    return String(num).split('').map(i => arabic[Number(i)]).join('');
+  };
 
   return (
     <div className="grid md:grid-cols-2 gap-8 font-body">
@@ -62,8 +77,15 @@ export function CopticDateDisplay() {
         </CardHeader>
         <CardContent>
           <div className="text-3xl font-bold font-headline text-primary">{gregorianDateString}</div>
-          <p className="text-xl text-muted-foreground mt-2">
+          <p className="text-xl text-muted-foreground mt-1" dir="rtl">
+            {gregorianDateStringArabic}
+          </p>
+          <div className="border-t my-4" />
+          <p className="text-xl text-primary/90">
             {`${copticDate.day} ${copticDate.monthName}, ${copticDate.year} A.M.`}
+          </p>
+          <p className="text-xl text-muted-foreground mt-1" dir="rtl">
+            {`${toArabicNumerals(copticDate.day)} ${copticDate.monthNameArabic}, ${toArabicNumerals(copticDate.year)} ش`}
           </p>
         </CardContent>
       </Card>
