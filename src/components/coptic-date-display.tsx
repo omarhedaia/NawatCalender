@@ -9,7 +9,7 @@ import type { Nawa } from "@/lib/nawat";
 import { getCurrentNawa } from "@/lib/nawat";
 import { CalendarDays, Wind } from "lucide-react";
 
-export function CopticDateDisplay() {
+export function CopticDateDisplay({ language }: { language: 'en' | 'ar' }) {
   const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -49,14 +49,7 @@ export function CopticDateDisplay() {
   const copticDate: CopticDate = gregorianToCoptic(now);
   const currentNawa: Nawa | null = getCurrentNawa(now);
   
-  const gregorianDateString = now.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-
-  const gregorianDateStringArabic = now.toLocaleDateString('ar-EG', {
+  const gregorianDateString = now.toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -68,40 +61,43 @@ export function CopticDateDisplay() {
     return String(num).split('').map(i => arabic[Number(i)]).join('');
   };
 
+  const copticDateString = language === 'ar' 
+    ? `${toArabicNumerals(copticDate.day)} ${copticDate.monthNameArabic}, ${toArabicNumerals(copticDate.year)} ش`
+    : `${copticDate.day} ${copticDate.monthName}, ${copticDate.year} A.M.`;
+
   return (
     <div className="grid md:grid-cols-2 gap-8 font-body">
       <Card className="shadow-lg border-primary/20">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg font-medium font-headline">Today's Date</CardTitle>
+          <CardTitle className="text-lg font-medium font-headline">{language === 'ar' ? 'تاريخ اليوم' : "Today's Date"}</CardTitle>
           <CalendarDays className="h-6 w-6 text-accent" />
         </CardHeader>
         <CardContent>
           <div className="text-3xl font-bold font-headline text-primary">{gregorianDateString}</div>
-          <p className="text-xl text-muted-foreground mt-1" dir="rtl">
-            {gregorianDateStringArabic}
-          </p>
-          <div className="border-t my-4" />
-          <p className="text-xl text-primary/90">
-            {`${copticDate.day} ${copticDate.monthName}, ${copticDate.year} A.M.`}
-          </p>
-          <p className="text-xl text-muted-foreground mt-1" dir="rtl">
-            {`${toArabicNumerals(copticDate.day)} ${copticDate.monthNameArabic}, ${toArabicNumerals(copticDate.year)} ش`}
+          <p className="text-xl text-muted-foreground mt-1">
+            {copticDateString}
           </p>
         </CardContent>
       </Card>
       <Card className="shadow-lg border-primary/20">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg font-medium font-headline">Current Winter Storm</CardTitle>
+          <CardTitle className="text-lg font-medium font-headline">{language === 'ar' ? 'نوة الشتاء الحالية' : 'Current Winter Storm'}</CardTitle>
           <Wind className="h-6 w-6 text-accent" />
         </CardHeader>
         <CardContent>
           {currentNawa ? (
             <>
-              <div className="text-3xl font-bold font-headline text-primary">{currentNawa.name} <span className="text-2xl text-muted-foreground">({currentNawa.arabicName})</span></div>
-              <p className="text-sm text-muted-foreground mt-2">{currentNawa.description}</p>
+              <div className="text-3xl font-bold font-headline text-primary">
+                {language === 'ar' ? currentNawa.arabicName : currentNawa.name}
+              </div>
+              <p className="text-sm text-muted-foreground mt-2">
+                {language === 'ar' ? currentNawa.arabicDescription : currentNawa.description}
+              </p>
             </>
           ) : (
-            <div className="text-xl font-semibold text-muted-foreground/80 pt-2">No active storm</div>
+            <div className="text-xl font-semibold text-muted-foreground/80 pt-2">
+              {language === 'ar' ? 'لا توجد نوة حالية' : 'No active storm'}
+            </div>
           )}
         </CardContent>
       </Card>
