@@ -51,18 +51,15 @@ export function CopticDateDisplay({ language }: { language: 'en' | 'ar' }) {
   const copticDate: CopticDate = gregorianToCoptic(now);
   const currentNawa: Nawa | null = getCurrentNawa(now);
   
-  // The Hijri calendar day starts at sunset. To better align with this,
-  // we adjust the date before formatting. Subtracting 12 hours helps
-  // account for this difference and prevents being a day ahead.
-  const adjustedHijriDate = new Date(now);
-  adjustedHijriDate.setHours(adjustedHijriDate.getHours() - 12);
-  const hijriDateString = getHijriDateString(adjustedHijriDate, language);
+  // The Hijri calendar is now calculated using Egypt's timezone directly.
+  const hijriDateString = getHijriDateString(now, language);
   
   const gregorianDateString = now.toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'Africa/Cairo',
   });
 
   const toArabicNumerals = (num: number) => {
