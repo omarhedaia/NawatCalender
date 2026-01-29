@@ -50,7 +50,13 @@ export function CopticDateDisplay({ language }: { language: 'en' | 'ar' }) {
 
   const copticDate: CopticDate = gregorianToCoptic(now);
   const currentNawa: Nawa | null = getCurrentNawa(now);
-  const hijriDateString = getHijriDateString(now, language);
+  
+  // The Hijri calendar day starts at sunset. To better align with this,
+  // we adjust the date before formatting. Subtracting 10 hours helps
+  // account for this difference and prevents being a day ahead.
+  const adjustedHijriDate = new Date(now);
+  adjustedHijriDate.setHours(adjustedHijriDate.getHours() - 10);
+  const hijriDateString = getHijriDateString(adjustedHijriDate, language);
   
   const gregorianDateString = now.toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', {
     weekday: 'long',
